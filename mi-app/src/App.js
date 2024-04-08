@@ -3,7 +3,13 @@ import Axios from 'axios';
 import './App.css';
 
 export default function App() {
-  const [contador, setContador] = useState(0);
+  const [restaurantData, setRestaurantData] = useState({
+    restaurantName: '',
+    restaurantNit: '',
+    restaurantAddress: '',
+    restaurantPhone: '',
+    cityId: 0
+  });
   const [departamentos, setDepartamentos] = useState([]);
   const [deptoSeleccionado, setDeptoSeleccionado] = useState('');
   const [ciudades, setCiudades] = useState([]);
@@ -34,14 +40,6 @@ export default function App() {
     
   },[deptoSeleccionado]);
 
-  function handleClick (){
-    setContador(contador + 1);
-  }
-
-  function handleDisminuirClick(){
-    setContador(contador -1);
-  }
-
   function handleDepartamentosSelect(event){
     setDeptoSeleccionado(event.target.value);
   }
@@ -50,15 +48,40 @@ export default function App() {
     setCiudadSeleccionada(event.target.value);
   }
 
+  function handleChange(event){
+    console.log(event.target) //solo es para ver como funciona
+    const { name, value} = event.target;
+    console.log( name + ": " + value); //solo es para ver como funciona
+    setRestaurantData({
+      ...restaurantData,
+      [name]: value
+    });
+  }
+
+  const handleSubmit = async(event) => {
+    try{
+      const response = await Axios.post('http://localhost:1337/api/createrestaurant', restaurantData);
+    }
+    catch (error){
+      console.log(error);
+    }
+  } 
+
   return (
     <div>
-      <label> Contador {contador} </label>
-      <div>
-        <button onClick={handleClick} > Aumentar contador</button>
-      </div>
-      <div>
-        <button onClick={handleDisminuirClick} > Disminuir contador</button>
-      </div>
+      <h2>Formulario Restaurante</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Nombre del restaurante: </label>
+          <input type='text' id="restaurantName" name="restaurantName" value={restaurantData.restaurantName} onChange={handleChange}></input>
+        </div>
+        <div>
+          <label>NIT del restaurante: </label>
+          <input type='text' id="restaurantNit" name="restaurantNit" value={restaurantData.restaurantNit} onChange={handleChange}></input>
+        </div>
+
+      </form>
+
       <div>
         <select id="opcionesDepartamentos" value={deptoSeleccionado} onChange={handleDepartamentosSelect}>
           <option value="">Seleccione un departamento</option>
