@@ -46,12 +46,14 @@ export default function App() {
 
   function handleCiudadesSelect(event){
     setCiudadSeleccionada(event.target.value);
+    setRestaurantData({
+      ...restaurantData,
+      cityId : event.target.value
+    })
   }
 
   function handleChange(event){
-    console.log(event.target) //solo es para ver como funciona
     const { name, value} = event.target;
-    console.log( name + ": " + value); //solo es para ver como funciona
     setRestaurantData({
       ...restaurantData,
       [name]: value
@@ -61,6 +63,7 @@ export default function App() {
   const handleSubmit = async(event) => {
     try{
       const response = await Axios.post('http://localhost:1337/api/createrestaurant', restaurantData);
+      console.log(response.data);
     }
     catch (error){
       console.log(error);
@@ -79,25 +82,36 @@ export default function App() {
           <label>NIT del restaurante: </label>
           <input type='text' id="restaurantNit" name="restaurantNit" value={restaurantData.restaurantNit} onChange={handleChange}></input>
         </div>
-
+        <div>
+          <label>Departamento: </label>
+          <select id="opcionesDepartamentos" value={deptoSeleccionado} onChange={handleDepartamentosSelect}>
+            <option value="">Seleccione un departamento</option>
+            {departamentos.map(opcion =>(
+              <option key={opcion.value} value={opcion.value}>{opcion.label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Ciudad: </label>
+          <select id="opcionesCiudades" value={ciudadSeleccionada} onChange={handleCiudadesSelect}>
+            <option value="">Seleccione una ciudad</option>
+            {ciudades.map(opcion =>(
+              <option key={opcion.value} value={opcion.value}>{opcion.label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Dirección del restaurante: </label>
+          <input type='text' id="restaurantAddress" name="restaurantAddress" value={restaurantData.restaurantAddress} onChange={handleChange}></input>
+        </div>
+        <div>
+          <label>Teléfono del restaurante: </label>
+          <input type='text' id="restaurantPhone" name="restaurantPhone" value={restaurantData.restaurantPhone} onChange={handleChange}></input>
+        </div>
+        <div>
+          <button type='submit'> Guardar </button>
+        </div>
       </form>
-
-      <div>
-        <select id="opcionesDepartamentos" value={deptoSeleccionado} onChange={handleDepartamentosSelect}>
-          <option value="">Seleccione un departamento</option>
-          {departamentos.map(opcion =>(
-            <option key={opcion.value} value={opcion.value}>{opcion.label}</option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <select id="opcionesCiudades" value={ciudadSeleccionada} onChange={handleCiudadesSelect}>
-          <option value="">Seleccione una ciudad</option>
-          {ciudades.map(opcion =>(
-            <option key={opcion.value} value={opcion.value}>{opcion.label}</option>
-          ))}
-        </select>
-      </div>
     </div>
   );
 }
